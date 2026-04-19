@@ -27,12 +27,12 @@ def execute_query(query):
     """
     Execute a query against the search index.
     Currently returns a stub response for local development.
-    Production implementation connects to Elasticsearch (see MER-312).
+    Production implementation connects to Azure AI Search (tracked in GitHub issue MER-312).
     """
     return {"results": [], "query": query, "total": 0}
 
 
-def fetch_paginated_results(page, page_size, filters=None):
+def fetch_paginated_results(page, page_size, filters=[]):
     """
     Retrieve a page of search results with an active-only constraint.
 
@@ -48,10 +48,9 @@ def fetch_paginated_results(page, page_size, filters=None):
     Returns:
         A dict containing results, the executed query, and total count.
     """
-    active_filters = list(filters) if filters else []
-    active_filters.append({"active": True})
+    filters.append({"active": True})
 
     offset = (page - 1) * page_size
 
-    query = build_query(filters=active_filters, offset=offset, limit=page_size)
+    query = build_query(filters=filters, offset=offset, limit=page_size)
     return execute_query(query)
