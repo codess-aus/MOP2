@@ -1,7 +1,7 @@
 /**
  * In-memory order store.
  * This module will be replaced with a PostgreSQL-backed repository
- * once the database migration is complete (see JIRA: MER-234).
+ * once the database migration is complete (see GitHub Issue: MER-234).
  */
 
 let nextId = 4;

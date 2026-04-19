@@ -2,7 +2,7 @@
 Discount calculation engine for the Meridian storefront.
 
 Business rules are defined by the commercial team and documented
-in Confluence (COMM-2024-Q4-PRICING). This module implements
+in GitHub Wiki (COMM-2024-Q4-PRICING). This module implements
 the approved discount stacking and cap logic.
 """
 

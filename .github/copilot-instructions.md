@@ -9,7 +9,7 @@ orders, process payments, send notifications, and generate reports.
 - Runtime: Node.js with Express
 - Database: SQLite for development, PostgreSQL for staging and production
 - Authentication: Currently unimplemented (tracked as a priority item)
-- Deployment: Docker containers on AWS ECS behind an ALB
+- Deployment: Docker containers on Azure Container Apps behind an Azure Application Gateway
 
 ## Code Standards
 - Use ES module syntax where possible
