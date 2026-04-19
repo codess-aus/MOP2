@@ -1,56 +1,21 @@
-"""
-Query builder for the product search service.
-Constructs filtered, paginated database queries from user search parameters.
-"""
+"""Tests for the search query builder module."""
+
+from search.query_builder import fetch_paginated_results
 
 
-def build_query(filters, offset, limit):
-    """
-    Assemble a query dict from the provided filters and pagination params.
+def test_fetch_paginated_results_includes_active_filter():
+    filters = [{"order_status": "pending"}]
 
-    Args:
-        filters: List of filter dicts, each with a field and value.
-        offset: Number of rows to skip.
-        limit: Maximum rows to return.
+    result = fetch_paginated_results(page=1, page_size=20, filters=filters)
 
-    Returns:
-        A dict representing the constructed query.
-    """
-    return {
-        "filters": filters,
-        "offset": offset,
-        "limit": limit,
-    }
+    assert result["query"]["filters"] == [{"order_status": "pending"}, {"active": True}]
+    assert result["query"]["offset"] == 0
+    assert result["query"]["limit"] == 20
 
 
-def execute_query(query):
-    """
-    Execute a query against the search index.
-    Currently returns a stub response for local development.
-    Production implementation connects to Elasticsearch (see MER-312).
-    """
-    return {"results": [], "query": query, "total": 0}
+def test_fetch_paginated_results_does_not_leak_filters_between_calls():
+    first = fetch_paginated_results(page=1, page_size=10)
+    second = fetch_paginated_results(page=2, page_size=10)
 
-
-def fetch_paginated_results(page, page_size, filters=[]):
-    """
-    Retrieve a page of search results with an active-only constraint.
-
-    The active filter ensures deactivated products are excluded from
-    customer-facing search results. Pagination uses 1-based page numbers
-    consistent with the REST API contract.
-
-    Args:
-        page: The 1-based page number to retrieve.
-        page_size: Number of results per page.
-        filters: Optional list of additional filter constraints.
-
-    Returns:
-        A dict containing results, the executed query, and total count.
-    """
-    filters.append({"active": True})
-
-    offset = (page - 1) * page_size
-
-    query = build_query(filters=filters, offset=offset, limit=page_size)
-    return execute_query(query)
+    assert first["query"]["filters"] == [{"active": True}]
+    assert second["query"]["filters"] == [{"active": True}]

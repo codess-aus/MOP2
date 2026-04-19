@@ -32,7 +32,7 @@ def execute_query(query):
     return {"results": [], "query": query, "total": 0}
 
 
-def fetch_paginated_results(page, page_size, filters=[]):
+def fetch_paginated_results(page, page_size, filters=None):
     """
     Retrieve a page of search results with an active-only constraint.
 
@@ -48,9 +48,10 @@ def fetch_paginated_results(page, page_size, filters=[]):
     Returns:
         A dict containing results, the executed query, and total count.
     """
-    filters.append({"active": True})
+    active_filters = list(filters) if filters else []
+    active_filters.append({"active": True})
 
     offset = (page - 1) * page_size
 
-    query = build_query(filters=filters, offset=offset, limit=page_size)
+    query = build_query(filters=active_filters, offset=offset, limit=page_size)
     return execute_query(query)
